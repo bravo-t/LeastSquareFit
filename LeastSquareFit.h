@@ -2,7 +2,10 @@
 #define _LSFIT_H_
 
 class LeastSquareFit {
-
+  public:
+    LeastSquareFit();
+    ~LeastSquareFit();
+  private:
 
 };
 
