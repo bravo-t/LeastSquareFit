@@ -6,27 +6,32 @@
 
 class LeastSquareFit {
   public:
-    LeastSquareFit();
-    ~LeastSquareFit();
+    using Function = std::function<double(const std::vector<double>& params, const std::vector<double>& x)>;
+    void setFunction(const Function& func);
+    void addDerivativeFunction(const Function& devFunc);
 
-    using FitFunction = std::function<double(const std::vector<double>& params, const std::vector<double>& x)>;
-    using FitVecFunction = std::function<std::vector<double>(const std::vector<double>& params, const std::vector<double>& x)>;
-    void setFitFunction(const FitFunction& func);
-    void setFitFunction(const FitVecFunction& func);
-    void addDerivativeFunction(const FitFunction& devFunc);
+    void setInitParams(const std::vector<double>& params);
+    void setObservationData(const std::vector<std::vector<double>>& obsX, 
+                            const std::vector<std::vector<double>>& obsY)
+    {
+      _obsX = obsX;
+      _obsY = obsY;
+    }
 
-    void run();
+    void addObservationXData(const std::vector<double>& x);
+    void addObservationYData(const std::vector<double>& x);
+
+    void run() { GaussNewton(); }
     std::vector<double> parameters() const { return _params; }
     double standardError() const { return _error; }
 
   private:
-    bool useNumericalDerivative() const { return _derivatives.empty(); }
-    double numericalDerivative() const;
-    double derivative() const;
+    void BFGS();
+    void GaussNewton();
 
   private:
-    FitVecFunction                   _fitFunction;
-    std::vector<FitFunction>         _derivatives;
+    Function                         _fitFunction;
+    std::vector<Function>            _derivatives;
     std::vector<double>              _params;
     double                           _error;
     std::vector<std::vector<double>> _obsX;
