@@ -108,7 +108,7 @@ int main()
   lsf.setInitParams({1,1,-1});
   lsf.run();
   const std::vector<double>& params = lsf.parameters();
-  printf("Fitted data parameters a = %f, b = %f, c = %f\n", params[0], params[1], params[2]);
+  printf("Fitted data parameters a = %f, b = %f, c = %f, error = %f\n", params[0], params[1], params[2], lsf.standardError());
   }
   {
   std::vector<double> x;
@@ -145,7 +145,7 @@ int main()
   lsf.setInitParams({2.5, 0.25});
   lsf.run();
   const std::vector<double>& params = lsf.parameters();
-  printf("Fitted data parameters a = %f, b = %f\n", params[0], params[1]);
+  printf("Fitted data parameters a = %f, b = %f, error = %f\n", params[0], params[1], lsf.standardError());
   }
   return 0;
 }

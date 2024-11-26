@@ -444,3 +444,20 @@ LeastSquareFit::GaussNewton()
   } while (x.L2Norm() > 1e-6);
   _params = param.data();
 }
+
+double 
+calcStdErr(const Function& func, const std::vector<double>& params, 
+           const std::vector<std::vector<double>>& obsX,
+           const std::vector<std::vector<double>>& obsY)
+{
+  Matrix F = Fx(func, params, obsX, obsY);
+  Matrix e = F.transpose() * F;
+  return std::sqrt(e.asDouble() / (obsX.size() - 2));
+}
+
+void
+LeastSquareFit::run() 
+{
+  GaussNewton();
+  _error = calcStdErr(_fitFunction, _params, _obsX, _obsY);
+}

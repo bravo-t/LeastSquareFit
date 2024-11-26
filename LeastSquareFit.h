@@ -21,7 +21,7 @@ class LeastSquareFit {
     void addObservationXData(const std::vector<double>& x);
     void addObservationYData(const std::vector<double>& x);
 
-    void run() { GaussNewton(); }
+    void run();
     std::vector<double> parameters() const { return _params; }
     double standardError() const { return _error; }
 
