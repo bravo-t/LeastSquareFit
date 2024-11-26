@@ -94,7 +94,7 @@ int main()
     double b = params[1];
     //double c = params[2];
     double x = xs[0];
-    return a*std::exp(b*x)*b;
+    return a*std::exp(b*x)*x;
   });
   lsf.addDerivativeFunction([](const std::vector<double>& params, const std::vector<double>& xs) {
     //double a = params[0];
@@ -103,7 +103,7 @@ int main()
     double x = xs[0];
     return x;
   });
-  lsf.setInitParams({1,0.2,-1});
+  lsf.setInitParams({1,1,-1});
   lsf.run();
   const std::vector<double>& params = lsf.parameters();
   printf("Fitted data parameters a = %f, b = %f, c = %f\n", params[0], params[1], params[2]);

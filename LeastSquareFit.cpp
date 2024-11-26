@@ -431,16 +431,16 @@ LeastSquareFit::GaussNewton()
   do {
     Matrix F = Fx(_fitFunction, param.data(), _obsX, _obsY);
     Matrix delF = delFx(_fitFunction, _derivatives, param.data(), _obsX);
-    F.print("===F===");
-    delF.print("===delF===");
+    //F.print("===F===");
+    //delF.print("===delF===");
     Matrix A = delF * delF.transpose();
     Matrix b = delF * F * -1;
-    A.print("===A===");
-    b.print("===b===");
+    //A.print("===A===");
+    //b.print("===b===");
     x = solveLinearEquations(A, b);
-    x.print("===x===");
+    //x.print("===x===");
     param = param + x;
-    param.print("===param===");
+    //param.print("===param===");
   } while (x.L2Norm() > 1e-6);
   _params = param.data();
 }
