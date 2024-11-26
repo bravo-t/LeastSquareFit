@@ -82,6 +82,7 @@ int main()
     return a*std::exp(b*x)+c*x;
   };
   lsf.setFunction(func);
+  /*
   lsf.addDerivativeFunction([](const std::vector<double>& params, const std::vector<double>& xs) {
     //double a = params[0];
     double b = params[1];
@@ -103,6 +104,7 @@ int main()
     double x = xs[0];
     return x;
   });
+  */
   lsf.setInitParams({1,1,-1});
   lsf.run();
   const std::vector<double>& params = lsf.parameters();
