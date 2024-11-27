@@ -427,7 +427,7 @@ LeastSquareFit::setInitParams(const std::vector<double>& params)
 void
 LeastSquareFit::BFGS()
 {
-  double stepSize = 0.001;
+  double stepSize = 1e-6;
   //Matrix delF = delFx(_fitFunction, _derivatives, _params, _obsX);
   Matrix Hk = Matrix::identity(_params.size());
   Matrix xk(_params);
@@ -436,9 +436,9 @@ LeastSquareFit::BFGS()
     Matrix gFk = gradFx(_fitFunction, _derivatives, xk.data(), _obsX, _obsY);
     Matrix xkp1 = xk - (Hk * gFk * stepSize);
     sk = xkp1 - xk;
-    xk.print("====xk====");
-    xkp1.print("====xkp1====");
-    sk.print("====sk====");
+    //xk.print("====xk====");
+    //xkp1.print("====xkp1====");
+    //sk.print("====sk====");
     Matrix gFkp1 = gradFx(_fitFunction, _derivatives, xkp1.data(), _obsX, _obsY);
     Matrix qk = gFkp1 - gFk;
     Matrix qkT = qk.transpose();
@@ -500,7 +500,15 @@ calcStdErr(const Function& func, const std::vector<double>& params,
 void
 LeastSquareFit::run() 
 {
-  BFGS();
-  GaussNewton();
+  switch (_fitMethod) {
+    case Method::BFGS:
+      BFGS();
+      break;
+    case Method::GaussNewton:
+      GaussNewton();
+      break;
+    default:
+      break;
+  }
   _error = calcStdErr(_fitFunction, _params, _obsX, _obsY);
 }
