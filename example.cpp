@@ -103,7 +103,7 @@ int main()
     return a*std::exp(b*x);
   };
   lsf.setFunction(func);
-  lsf.addDerivativeFunction([](const std::vector<double>& params, const std::vector<double>& xs) {
+  /*lsf.addDerivativeFunction([](const std::vector<double>& params, const std::vector<double>& xs) {
     //double a = params[0];
     double b = params[1];
     //double c = params[2];
@@ -116,7 +116,7 @@ int main()
     //double c = params[2];
     double x = xs[0];
     return a*std::exp(b*x)*x;
-  });
+  });*/
   lsf.setInitParams({1, 1});
   lsf.setFitMethod(LeastSquareFit::Method::BFGS);
   lsf.run();
