@@ -12,14 +12,14 @@ class LeastSquareFit {
 
     void setInitParams(const std::vector<double>& params);
     void setObservationData(const std::vector<std::vector<double>>& obsX, 
-                            const std::vector<std::vector<double>>& obsY)
+                            const std::vector<double>& obsY)
     {
       _obsX = obsX;
       _obsY = obsY;
     }
 
     void addObservationXData(const std::vector<double>& x);
-    void addObservationYData(const std::vector<double>& x);
+    void addObservationYData(const std::vector<double>& y);
 
     void run();
     std::vector<double> parameters() const { return _params; }
@@ -35,7 +35,7 @@ class LeastSquareFit {
     std::vector<double>              _params;
     double                           _error;
     std::vector<std::vector<double>> _obsX;
-    std::vector<std::vector<double>> _obsY;
+    std::vector<double>              _obsY;
 };
         
 #endif

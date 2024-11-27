@@ -106,7 +106,7 @@ int main()
   });
   */
   lsf.setInitParams({1,1,-1});
-  lsf.run();
+  //lsf.run();
   const std::vector<double>& params = lsf.parameters();
   printf("Fitted data parameters a = %f, b = %f, c = %f, error = %f\n", params[0], params[1], params[2], lsf.standardError());
   }
@@ -142,7 +142,7 @@ int main()
     double x = xs[0];
     return a*std::exp(b*x)*x;
   });
-  lsf.setInitParams({2.5, 0.25});
+  lsf.setInitParams({1, 0});
   lsf.run();
   const std::vector<double>& params = lsf.parameters();
   printf("Fitted data parameters a = %f, b = %f, error = %f\n", params[0], params[1], lsf.standardError());

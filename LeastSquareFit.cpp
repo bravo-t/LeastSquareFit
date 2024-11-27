@@ -301,7 +301,7 @@ addObsData(const std::vector<double>& data,
 void
 LeastSquareFit::addObservationYData(const std::vector<double>& data)
 {
-  addObsData(data, _obsY);
+  _obsY.assign(data.begin(), data.end());
 }
 
 void
@@ -310,15 +310,25 @@ LeastSquareFit::addObservationXData(const std::vector<double>& data)
   addObsData(data, _obsX);
 }
 
+static double
+residualFx(const Function& func, 
+           const std::vector<double>& params,
+           const std::vector<std::vector<double>>& obsX, 
+           const std::vector<double>& obsY,
+           size_t i)
+{
+  return func(params, obsX[i]) - obsY[i];
+}
+
 static Matrix
 Fx(const Function& func, 
    const std::vector<double>& params, 
    const std::vector<std::vector<double>>& obsX,
-   const std::vector<std::vector<double>>& obsY)
+   const std::vector<double>& obsY)
 {
   Matrix result(obsX.size(), 1);
   for (size_t i=0; i<obsX.size(); ++i) {
-    result(i) = func(params, obsX[i]) - obsY[i][0];
+    result(i) = residualFx(func, params, obsX, obsY, i);
   }
   return result;
 }
@@ -367,6 +377,35 @@ delFx(const Function& func,
   return result;
 }
 
+static Matrix
+gradFx(const Function& func, 
+       const std::vector<Function>& derivatives,
+       const std::vector<double>& params, 
+       const std::vector<std::vector<double>>& obsX, 
+       const std::vector<double>& obsY)
+{
+  bool useNumericalDerivative = false;
+  if (derivatives.empty()) {
+    useNumericalDerivative = true;
+  }
+  Matrix result(params.size(), 1);
+  for (size_t i=0; i<result.height(); ++i) {
+    double gradSum = 0;
+    for (size_t j=0; j<obsX.size(); ++j) {
+      double del;
+      if (useNumericalDerivative) {
+        del = numericalDerivative(func, params, obsX[j], i);
+      } else {
+        del = derivative(derivatives[i], params, obsX[j]);
+      }
+      del *= residualFx(func, params, obsX, obsY, j);
+      gradSum += del;
+    }
+    result(i, 0) = gradSum;
+  }
+  return result;
+}
+
 void
 LeastSquareFit::setFunction(const Function& func)
 {
@@ -388,17 +427,20 @@ LeastSquareFit::setInitParams(const std::vector<double>& params)
 void
 LeastSquareFit::BFGS()
 {
-  double stepSize = 1e-4;
+  double stepSize = 0.001;
   //Matrix delF = delFx(_fitFunction, _derivatives, _params, _obsX);
   Matrix Hk = Matrix::identity(_params.size());
   Matrix xk(_params);
   Matrix sk(_params.size(), 1);
   do {
-    Matrix delFk = delFx(_fitFunction, _derivatives, xk.data(), _obsX);
-    Matrix xkp1 = xk - (Hk * delFk * stepSize);
+    Matrix gFk = gradFx(_fitFunction, _derivatives, xk.data(), _obsX, _obsY);
+    Matrix xkp1 = xk - (Hk * gFk * stepSize);
     sk = xkp1 - xk;
-    Matrix delFkp1 = delFx(_fitFunction, _derivatives, xkp1.data(), _obsX);
-    Matrix qk = delFkp1 - delFk;
+    xk.print("====xk====");
+    xkp1.print("====xkp1====");
+    sk.print("====sk====");
+    Matrix gFkp1 = gradFx(_fitFunction, _derivatives, xkp1.data(), _obsX, _obsY);
+    Matrix qk = gFkp1 - gFk;
     Matrix qkT = qk.transpose();
     Matrix rhokInv = qkT * sk;
     double rhok = 1 / rhokInv.asDouble();
@@ -448,7 +490,7 @@ LeastSquareFit::GaussNewton()
 double 
 calcStdErr(const Function& func, const std::vector<double>& params, 
            const std::vector<std::vector<double>>& obsX,
-           const std::vector<std::vector<double>>& obsY)
+           const std::vector<double>& obsY)
 {
   Matrix F = Fx(func, params, obsX, obsY);
   Matrix e = F.transpose() * F;
@@ -458,6 +500,7 @@ calcStdErr(const Function& func, const std::vector<double>& params,
 void
 LeastSquareFit::run() 
 {
+  BFGS();
   GaussNewton();
   _error = calcStdErr(_fitFunction, _params, _obsX, _obsY);
 }
