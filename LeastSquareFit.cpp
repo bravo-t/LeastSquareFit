@@ -2,7 +2,9 @@
 #include <cmath>
 #include <cstdio>
 #include "LeastSquareFit.h"
+#include "Matrix.h"
 
+/*
 class Matrix {
   public:
     Matrix() = default;
@@ -280,6 +282,7 @@ Matrix::transpose() const
   }
   return t;
 }
+*/
 
 using Function = LeastSquareFit::Function;
 

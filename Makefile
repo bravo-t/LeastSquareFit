@@ -13,7 +13,7 @@ SRC_DIR     = .
 BUILD_DIR   = ./build
 BIN_DIR     = .
 
-SRC_LIST = example.cpp LeastSquareFit.cpp
+SRC_LIST = example.cpp LeastSquareFit.cpp BFGS.cpp Matrix.cpp
 
 SRC_LIST_TMP = $(patsubst %,./%,$(SRC_LIST))
 OBJ_LIST = $(subst .cpp,.o,$(SRC_LIST_TMP))

@@ -1,9 +1,22 @@
 #include "LeastSquareFit.h"
+#include "BFGS.h"
 #include <cmath>
 #include <cstdio>
 
 int main()
 {
+  BFGSMinimizer m;
+  BFGSMinimizer::Function bananaFunc = [](const std::vector<double>& x) {
+    double x0 = x[0];
+    double x1 = x[1];
+    return 100 * std::pow(x1 - x0 * x0, 2) + std::pow(1 - x0, 2);
+  };
+  m.setFunction(bananaFunc);
+  m.setInitX({-1.9, 2});
+  m.run();
+  const std::vector<double>& coor = m.minCoordinate();
+  printf("Min coordinate for Rosenbrock function found at (%f, %f)\n", coor[0], coor[1]);
+  return 0;
   {
   std::vector<double> x;
   std::vector<double> y;
