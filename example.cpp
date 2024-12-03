@@ -16,6 +16,18 @@ int main()
   m.run();
   const std::vector<double>& coor = m.minCoordinate();
   printf("Min coordinate for Rosenbrock function found at (%f, %f)\n", coor[0], coor[1]);
+  
+  BFGSMinimizer::Function testFunc = [](const std::vector<double>& x) {
+    double x0 = x[0];
+    double x1 = x[1];
+    return x0*x0 - x1*x1;
+  };
+  BFGSMinimizer m2;
+  m2.setFunction(testFunc);
+  m2.setInitX({1, 1});
+  m2.run();
+  const std::vector<double>& coor2 = m2.minCoordinate();
+  printf("Min coordinate for x^2-y^2 found at (%f, %f)\n", coor2[0], coor2[1]);
   return 0;
   {
   std::vector<double> x;
